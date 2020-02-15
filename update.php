@@ -1,159 +1,146 @@
+<?php 
+session_start();
+$login_session=$_SESSION['login_user'];
+$user_email=$_SESSION['user_email'];
+ ?>
+ <?php 
+ $name=$mobile=$dob=$gender=$skills=$about=$image=$address="";
+ if ($_SERVER['REQUEST_METHOD']=='POST') {
+ 	$name=$_POST['name'];
+ 	$address=$_POST['address'];
+ 	$mobile=$_POST['mobile'];
+ 	$dob=$_POST['dob'];
+ 	$gender=$_POST['gender'];
+ 	$skills=$_POST['skills'];
+ 	$about=$_POST['about'];
+ 	$image=$_POST['image'];
+ }
+include("config.php");
+if (!empty($name) or !empty($mobile) or !empty($dob) or !empty($gender) or !empty($skills) or !empty($about) or !empty($image)) {
+	$sel_sql=$conn->query("SELECT * FROM Users WHERE user_id='$login_session'");
+	$row=$sel_sql->fetch_assoc();
+	$dname=$row['name'];
+	$dgender=$row['gender'];
+	$ddob=$row['dob'];
+	$dmobile=$row['mobile'];
+	$daddress=$row['address'];
+	$dabout=$row['about'];
+	$dimage=$row['image'];
+	$dskills=$row['skills'];
+	if (empty($name)) {
+		$name=$dname;
+	}
+	if (empty($gender)) {
+		$gender=$dgender;
+	}
+	if (empty($dob)) {
+		$dob=$ddob;
+	}
+	if (empty($mobile)) {
+		$mobile=$dmobile;
+	}
+	if (empty($address)) {
+		$address=$daddress;
+	}
+	if (empty($about)) {
+		$about=$dabout;
+	}
+	if (empty($image)) {
+		$image=$dimage;
+	}
+	if (empty($skills)) {
+		$skills=$dskills;
+	}
+	$sql="UPDATE Users SET name='$name',mobile='$mobile',gender='$gender',dob='$dob',image='$image',address='$address',about='$about',skills='$skills' WHERE user_id='$login_session'";
+if ($conn->query($sql)) {
+	echo "<script Type='javascript'>alert('Profile Updated Successfully')</script>";
+	header("location:profile.php");
+}
+else{
+	echo "<script Type='javascript'>alert('Server Error')</script>";
+echo "Error Updating Record".$conn->error;
+}
+}
+else{
+	echo "<script Type='javascript'>alert('Enter atleast one input')</script>";
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Registration</title>
-	<style type="text/css">
-		div{
-			background-color: blue;
-		}
-	</style>
+	<title>Edit</title>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <style type="text/css">
+  	label{
+  		font-size: 20px;
+  	}
+  	.container{
+  		padding: 20px;
+  	}
+  	button{
+  		margin: 20px;
+  	}
+  </style>
 </head>
 <body>
-<?php
-$name=$mobile=$email=$dob=$gender=$image=$resume="";
-$rname=$rmobile=$remail=$rdob=$rgender=$rimage=$rresume="";
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	if (empty($_POST['name'])) {
-		$rname="* This is required";
-	}
-	else{
-		$name=$_POST['name'];
-	}
-	if (empty($_POST['mobile'])) {
-		$rmobile="* This is required";
-	}
-	else{
-		$mobile=$_POST['mobile'];
-	}
-	if (empty($_POST['email'])) {
-		$remail="* This is required";
-	}
-	else{
-		$email=$_POST['email'];
-	}
-	if (empty($_POST['dob'])) {
-		$rdob="* This is required";
-	}
-	else{
-		$dob=$_POST['dob'];
-	}
-	if (empty($_POST['gender'])) {
-		$rgender="* This is required";
-	}
-	else{
-		$gender=$_POST['gender'];
-	}
-	if (empty($_POST['image'])) {
-		$rimage="* This is required";
-	}
-	else{
-		$image=$_POST['image'];
-	}
-	if (empty($_POST['resume'])) {
-		$rresume="* This is required";
-	}
-	else{
-		$resume=$_POST['resume'];
-	}
-}
-?>
-
-
-
-	<div style="background-color: red; padding: 10px;">
-		<center>
-		<div style="background-color: green;">
+	<header><h1> Hii <?php echo($login_session)?> Update Your Profile</h1></header>
+	<div class="container-fluid">
+		<div class="container">
 			<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" >
-		<table>
-			<tr>
-				<th>Name</th>
-				<td>
-					<input type="text" name="name">
-					<span style="color: red;"><?php echo $rname ?></span>
-				</td>
-			</tr>
-			<tr>
-				<th>Mobile</th>
-				<td>
-					<input type="number" name="mobile">
-					<span style="color: red;"><?php echo $rmobile ?></span>
-				</td>
-			</tr>
-			<tr>
-				<th>Email</th>
-				<td>
-					<input type="email" name="email">
-					<span style="color: red;"><?php echo $remail ?></span>
-				</td>
-			</tr>
-			<tr>
-				<th>DOB</th>
-				<td>
-					<input type="date" name="dob">
-					<span style="color: red;"><?php echo $rdob ?></span>
-				</td>
-			</tr>
-			<tr>
-				<th>Gender</th>
-				<td>
-					<input type="radio" name="gender" value="Male">Male
+			<div class="form-group">
+				<label for="username">UserName :</label>
+				<input type="text" name="userid" value="<?php echo($login_session)?>" class="form-control"  readonly>					
+			</div>
+			<div class="form-group">
+				<label for="username">Name :</label>
+				<input type="text" name="name" class="form-control">					
+			</div>
+			<div class="form-group">
+				<label for="username">Email :</label>
+				<input type="email" name="email" value="<?php echo($user_email)?>" class="form-control" readonly="true" required>					
+			</div>
+			<div class="form-group">
+				<label for="username">Mobile :</label>
+				<input type="text" name="mobile" class="form-control" maxlength="10" placeholder="Enter 10 digit Mobile Number">					
+			</div>
+			<div class="form-group">
+				<label for="username">Date of Birth :</label>
+				<input type="date" name="dob" class="form-control">					
+			</div>
+			<div class="form-group">
+				<label for="username">Gender :</label>
+				<input type="radio" name="gender" value="Male">Male
 					<input type="radio" name="gender" value="Female">Female
-					<input type="radio" name="gender" value="Other">Other
-					<span style="color: red;"><?php echo $rgender ?></span>
-				</td>
-			</tr>
-			<tr>
-				<th>Image</th>
-				<td>
-					<input type="file" name="image">
-					<span style="color: red;"><?php echo $rimage ?></span>
-				</td>
-			</tr>
-			<tr>
-				<th>Resume</th>
-				<td>
-					<input type="file" name="resume">
-					<span style="color: red;"><?php echo $rresume ?></span>
-				</td>
-			</tr>
-			<tr>
-				<th></th>
-				<td>
-					<input type="submit" name="submit">
-				</td><th></th>
-				<td>
-					<input type="reset" name="reset">
-				</td>
-				
-			</tr>
-		</table>
+					<input type="radio" name="gender" value="Other">Other					
+			</div>
+			<div class="form-group">
+				<label for="username">Skills :</label>
+				<input type="text" name="skills" class="form-control" placeholder="Enter Skills Separated by semicolon">					
+			</div>
+			<div class="form-group">
+				<label for="username">About YourSelf:</label>
+				<textarea class="form-control" placeholder="Enter About YourSelf less than 150 words" name="about"></textarea>				
+			</div>
+			<div class="form-group">
+				<label for="username">Address:</label>
+				<textarea class="form-control" placeholder="Enter Address" name="address"></textarea>				
+			</div>
+			<div >
+				<label for="username">Profile Image :</label>
+				<input type="file" name="image">					
+			</div>
+			<div>
+				<button class="btn btn-primary" type="submit">Update</button>
+				<button class="btn btn-warning" type="reset">Resert</button>					
+			</div>
 	</form>
-
 		</div>
-		</center>
-		<?php
-		if (!empty($name) and !empty($mobile) and !empty($email) and !empty($gender) and !empty($dob) and !empty($image) and !empty($resume)) {
-			echo "<h1> Your Input :</h1>";
-			echo "Name     : ".$name;
-			echo "Mobile   : ".$mobile;
-			echo "Email    : ".$email;
-			echo "Gender   : ".$gender;
-			echo "DOB      : ".$dob;
-			echo "Image    : ".$image;
-			echo "Resume   : ".$resume;
-		}
-		?>
-		<?php 
-		$hostname="localhost";
-		$username="root";
-		$pass="";
-		$dbname="sample";
-		$conn=new mysqli($hostname,$username,$pass,$dbname);
-		if (!$conn) {
-			die("Connection failed: " . $conn->connect_error);
-		}
-		echo "Connection Successfull";
-		?>
 	</div>
+
 </body>
 </html>

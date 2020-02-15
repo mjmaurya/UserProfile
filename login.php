@@ -35,7 +35,39 @@
   </style>
 </head>
 <body>
+	<div>
+ <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="index.php">TechWithMJ</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">xyz</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">PQR</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Account
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="registration.php">SignUp</a>
+          <a class="dropdown-item" href="login.php">Login</a>
+          <a class="dropdown-item" href="profile.php">Profile</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+</div>
 	<?php
+	session_start();
 	$userid=$password="";
 	$ruserid=$rpassword=$error="";
 	if ($_SERVER["REQUEST_METHOD"]=="POST") {
@@ -54,12 +86,11 @@
 	}
 	if (!empty($userid) and !empty($password)) {
 	include("config.php");
-	session_start();
-	$check_u="SELECT email FROM Users WHERE user_id='$userid' or email='userid' and password='$password'";
+	$check_u="SELECT email FROM Users WHERE user_id='$userid' or email='$userid' and password='$password'";
 	$tot_u=$conn->query($check_u);
 	if (mysqli_num_rows($tot_u)==1) {
-		$_SESSION["login_user"]=$userid;
-		header("location: update.php");
+		$_SESSION['login_user']=$userid;
+		header("location:profile.php");
 	}
 	else
 	{
